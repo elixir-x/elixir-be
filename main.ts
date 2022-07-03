@@ -45,8 +45,8 @@ const startup = async () => {
     app.use('/api/v1/', userRouter, securityRouter);
 
     https.createServer({
-        cert: readFileSync('.././cert.pem'),
-        key: readFileSync('.././cert-key.pem'),
+        cert: readFileSync('./cert.pem'),
+        key: readFileSync('./cert-key.pem'),
     }, app).listen(process.env.PORT, undefined, () => {
         console.log(`Elixir backend is listening on port ${process.env.PORT}.`);
     });
