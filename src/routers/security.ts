@@ -17,7 +17,6 @@ router.post('/login', async (req, res) => {
         .exec(async (error, doc) => {
             if (doc) {
                 const verified = await doc.checkPassword(password);
-                console.log('sex');
                 if (verified) {
                     regenerateUserSession(req, doc, error => {
                         if (error)

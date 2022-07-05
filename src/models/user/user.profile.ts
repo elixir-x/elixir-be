@@ -38,10 +38,6 @@ const UserSchema: Schema<IUserDocument> = new Schema({
     lastLogin: Date,
 }, { timestamps: true });
 
-// UserSchema.pre('save', async function (next) {
-//     this.password = await argon2.hash(this.password);
-//     next();
-// });
 
 UserSchema.methods.checkPassword = async function (password: string) {
     return await argon2.verify(this.password, password);
