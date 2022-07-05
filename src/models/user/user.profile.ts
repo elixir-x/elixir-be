@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import { IUserPreference, UserPreferenceSchema } from "../preference/preference";
 import argon2 from "argon2";
 
 export interface IUser extends Document {
@@ -6,6 +7,7 @@ export interface IUser extends Document {
     username: string,
     password: string,
     profile_url?: string,
+    preferences: IUserPreference[],
     lastLogin: Date,
     createdAt: Date,
     updatedAt: Date,
@@ -35,6 +37,7 @@ const UserSchema: Schema<IUserDocument> = new Schema({
         required: true,
     },
     profile_url: String,
+    preferences: [UserPreferenceSchema],
     lastLogin: Date,
 }, { timestamps: true });
 
