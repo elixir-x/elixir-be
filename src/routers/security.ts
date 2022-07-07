@@ -3,13 +3,13 @@ import { sendError, sendData } from "../utils/request-util";
 import UserProfile from "../models/user/user.profile";
 import { deleteUserSession, regenerateUserSession } from "../utils/session";
 import argon2 from "argon2";
+import { validate } from "../models/zod.schema";
+import { LoginSchema, RegisterSchema } from '../models/zod.schema';
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
+router.post('/login', validate(LoginSchema), async (req, res) => {
     const { user, password } = req.body;
-    if (!user || !password)
-        return sendError(res, { message: 'Missing parameters!', code: 404 });
 
     UserProfile
         .findOne({})
@@ -35,18 +35,15 @@ router.get('/logout', (req, res) => {
     return res.sendStatus(200);
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', validate(RegisterSchema), async (req, res) => {
     const { email, username, password } = req.body;
-    if (!email || !username || !password)
-        return sendError(res, { message: 'Missing parameters!' });
-    else {
-        const hashedPassword = await argon2.hash(password);
-        UserProfile.create({ email, username, password: hashedPassword }, (error, result) => {
-            if (error)
-                sendError(res, { message: 'An error has occurred during the registration process.' });
-            else sendData(res, { user: result });
-        });
-    }
+
+    const hashedPassword = await argon2.hash(password);
+    UserProfile.create({ email, username, password: hashedPassword }, (error, result) => {
+        if (error)
+            sendError(res, { message: 'An error has occurred during the registration process.' });
+        else sendData(res, { user: result });
+    });
 });
 
 export default router;
