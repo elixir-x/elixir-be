@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import userRouter from "./src/routers/user";
 import securityRouter from "./src/routers/security";
+import emailRouter from './src/routers/email';
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import https from "https";
@@ -42,7 +43,7 @@ const startup = async () => {
             }
         }));
 
-    app.use('/api/v1/', userRouter, securityRouter);
+    app.use('/api/v1/', userRouter, securityRouter, emailRouter);
 
     https.createServer({
         cert: readFileSync('./cert.pem'),

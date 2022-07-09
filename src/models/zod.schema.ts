@@ -3,11 +3,10 @@ import { Request, Response, NextFunction } from "express";
 
 export const LoginSchema = object({
     body: object({
-        email: string({
-            required_error: "Email must be specified.",
-            invalid_type_error: "Email must be a string."
-        })
-            .email("You must specify an email."),
+        user: string({
+            required_error: "Email or Username must be specified.",
+            invalid_type_error: "Email or Username must be a string."
+        }),
         password: string({
             required_error: "Password must be specified.",
             invalid_type_error: "Password must be a string."
@@ -40,6 +39,26 @@ export const RegisterSchema = object({
             .max(128, "Password cannot be longer than 128 characters.")
     })
 });
+
+export const EmailVerificationSchema = object({
+    query: object({
+        token: string({
+            required_error: "Token must be specified.",
+            invalid_type_error: "Token must be a string."
+        }),
+    })
+});
+
+export const EmailVerificationCheckSchema = object({
+    token: string({
+        required_error: "Token must be specified.",
+        invalid_type_error: "Token must be a string."
+    }),
+    code: string({
+        required_error: "Code must be specified.",
+        invalid_type_error: "Code must be a string."
+    })
+})
 
 export const validate = (schema: ZodObject<any>) => (req: Request, res: Response, next: NextFunction) => {
     try {

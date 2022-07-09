@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/user', authenticate, async (req, res) => {
     if (req.session.user)
-        sendData(res, req.session.user);
+        sendData(res, { ...req.session.user, password: null });
     else sendError(res, { message: 'This user does not exist!', code: 404 });
 });
 

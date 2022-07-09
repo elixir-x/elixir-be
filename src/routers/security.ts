@@ -20,13 +20,13 @@ router.post('/login', validate(LoginSchema), async (req, res) => {
                 if (verified) {
                     regenerateUserSession(req, doc, error => {
                         if (error)
-                            return sendError(res, { message: 'Login failed.' });
+                            return res.sendStatus(500);
                     });
                     doc.lastLogin = new Date(Date.now());
                     await doc.save();
                     res.sendStatus(200);
                 }
-            } else sendError(res, { message: 'Login failed.' });
+            } else return res.sendStatus(404);
         });
 });
 
