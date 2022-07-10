@@ -29,7 +29,6 @@ const UserSchema: Schema<IUserDocument> = new Schema({
     },
     username: {
         type: String,
-        unique: true,
         required: true
     },
     password: {

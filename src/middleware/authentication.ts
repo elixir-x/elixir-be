@@ -8,7 +8,7 @@ declare module 'express-serve-static-core' {
 
 declare module 'express-session' {
     export interface SessionData {
-        user: IUserDocument & {_id: any} | null;
+        user: IUserDocument & {_id: any} | IUserDocument | null;
     }
 }
 

@@ -17,7 +17,9 @@ const app = express();
 const mongoStore = MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
     collectionName: 'sessions',
-    ttl: 60 * 60 * 24 * 14
+
+    ttl: 60 * 60 * 24 * 14,
+    autoRemove: 'native'
 });
 
 const startup = async () => {
@@ -34,6 +36,7 @@ const startup = async () => {
             secret: process.env.SECRET as string,
             resave: false,
             saveUninitialized: false,
+            unset: 'destroy',
             store: mongoStore,
             cookie: {
                 secure: true,

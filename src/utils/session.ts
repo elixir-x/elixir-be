@@ -11,9 +11,6 @@ export const regenerateUserSession = (req: Request, user: IUserDocument & {_id: 
     });
 }
 
-export const deleteUserSession = (req: Request) => {
-    // delete the user from session
-    req.session.user = null;
-    // save and regenerate the session
-    req.session.save(() => req.session.regenerate);
+export const deleteUserSession = (req: Request, callback: (err: any) => void) => {
+    req.session.destroy(callback);
 }

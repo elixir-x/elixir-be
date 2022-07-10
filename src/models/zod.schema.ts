@@ -1,5 +1,7 @@
 import { object, string, ZodObject } from "zod";
 import { Request, Response, NextFunction } from "express";
+import { sendError } from "../utils/request-util";
+import { StatusCodes } from "http-status-codes";
 
 export const LoginSchema = object({
     body: object({
@@ -58,7 +60,18 @@ export const EmailVerificationCheckSchema = object({
         required_error: "Code must be specified.",
         invalid_type_error: "Code must be a string."
     })
-})
+});
+
+export const CheckUsernameSchema = object({
+    query: object({
+        username: string({
+            required_error: "Username must be specified.",
+            invalid_type_error: "Username must be a string."
+        })
+            .min(3, "Username must be at least 3 characters.")
+            .max(48, "Username cannot be longer than 48 characters.")
+    })
+});
 
 export const validate = (schema: ZodObject<any>) => (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -69,6 +82,13 @@ export const validate = (schema: ZodObject<any>) => (req: Request, res: Response
         });
         next();
     } catch (error: any) {
-        return res.status(400).send(error.errors);
+        return sendError(res, [
+            ...error.errors.map((err: any) => {
+                return {
+                    code: err.code,
+                    message: err.message
+                };
+            })
+        ], StatusCodes.BAD_REQUEST);
     }
 };
