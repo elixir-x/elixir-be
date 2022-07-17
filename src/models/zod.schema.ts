@@ -22,7 +22,7 @@ export const RegisterSchema = object({
     body: object({
         email: string({
             required_error: "Email must be specified.",
-            invalid_type_error: "Email must be a string."
+            invalid_type_error: "Must be an email."
         })
             .email("You must specify an email."),
 
@@ -39,6 +39,30 @@ export const RegisterSchema = object({
         })
             .min(8, "Password must be at least 8 characters.")
             .max(128, "Password cannot be longer than 128 characters.")
+    })
+});
+
+
+export const UpdateUserSchema = object({
+    body: object({
+        username: string({
+            invalid_type_error: "Username must be a string."
+        })
+            .min(3, "Username must be at least 3 characters.")
+            .max(48, "Username cannot be longer than 48 characters.")
+            .optional(),
+        email: string({
+            invalid_type_error: "Must be an email."
+        })
+            .optional(),
+        profileUrl: string({
+            invalid_type_error: "Profile URL must be a string."
+        })
+            .optional(),
+        bio: string({
+            invalid_type_error: "Bio must be a string."
+        })
+            .optional()
     })
 });
 

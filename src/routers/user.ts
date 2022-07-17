@@ -3,7 +3,7 @@ import UserProfile from "../models/user/user.profile";
 import { sendData, sendError } from "../utils/request-util";
 import { authenticate } from "../middleware/authentication";
 import { StatusCodes } from "http-status-codes";
-import { CheckUsernameSchema, validate } from "../models/zod.schema";
+import { CheckUsernameSchema, UpdateUserSchema, validate } from "../models/zod.schema";
 const router = express.Router();
 
 router.get('/user', authenticate, async (req, res) => {
@@ -14,9 +14,9 @@ router.get('/user', authenticate, async (req, res) => {
     ], StatusCodes.NOT_FOUND);
 });
 
-router.patch('/user', authenticate, async (req, res) => {
-    const { email, username, profileUrl } = req.body;
-    UserProfile.findOneAndUpdate({ _id: req.session.user?._id }, { username, email, profileUrl }, { new: true },
+router.patch('/user', validate(UpdateUserSchema), authenticate, async (req, res) => {
+    const { email, username, bio, profileUrl } = req.body;
+    UserProfile.findOneAndUpdate({ _id: req.session.user?._id }, { username, email, bio, profileUrl }, { new: true },
         (error, result) => {
         if (error || result === null)
             sendError(res, [
