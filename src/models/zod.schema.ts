@@ -55,6 +55,18 @@ export const UpdateUserSchema = object({
             invalid_type_error: "Must be an email."
         })
             .optional(),
+        password: string({
+            invalid_type_error: "Password must be a string."
+        })
+            .min(8, "Password must be at least 8 characters.")
+            .max(128, "Password cannot be longer than 128 characters.")
+            .optional(),
+        confirmPassword: string({
+            invalid_type_error: "Confirm Password must be a string."
+        })
+            .min(8, "Password must be at least 8 characters.")
+            .max(128, "Password cannot be longer than 128 characters.")
+            .optional(),
         profileUrl: string({
             invalid_type_error: "Profile URL must be a string."
         })
@@ -64,6 +76,22 @@ export const UpdateUserSchema = object({
         })
             .optional()
     })
+        .partial()
+        .superRefine((data, ctx) => {
+            if (!data.email && !data.bio && !data.username && !data.profileUrl) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: 'You must specify something to update.'
+                });
+            }
+            // if modifying important details the password to the account must be specified
+            // if (data.email || data.username && (!!data.password || !!data.confirmPassword)) {
+            //     return ctx.addIssue({
+            //         code: "custom",
+            //         message: 'You must enter a password to change important user details.'
+            //     });
+            // }
+        })
 });
 
 export const EmailVerificationSchema = object({
