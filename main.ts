@@ -9,6 +9,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import https from "https";
 import { readFileSync } from "fs";
+import path from "path";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ const startup = async () => {
     console.log('Mongoose database has been connected.');
 
     app.use(express.json())
+        .use('/' + process.env.PROFILE_UPLOAD_PATH, express.static(process.env.PROFILE_UPLOAD_PATH as string))
         .use(express.urlencoded({ extended: true }))
         .use(cors({
             credentials: true,

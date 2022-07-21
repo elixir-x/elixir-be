@@ -7,7 +7,6 @@ export interface IUser extends Document {
     username: string,
     password: string,
     bio?: string,
-    profileUrl?: string,
     preferences: IUserPreference[],
     lastLogin: Date,
     createdAt: Date,
@@ -37,7 +36,6 @@ const UserSchema: Schema<IUserDocument> = new Schema({
         required: true,
     },
     bio: String,
-    profileUrl: String,
     preferences: [UserPreferenceSchema],
     lastLogin: Date,
 }, { timestamps: true });

@@ -4,19 +4,24 @@ import { sendData, sendError } from "../utils/request-util";
 import { authenticate } from "../middleware/authentication";
 import { StatusCodes } from "http-status-codes";
 import { CheckUsernameSchema, UpdateUserSchema, validate } from "../models/zod.schema";
+import { uploadFile } from "../lib/upload";
 const router = express.Router();
 
 router.get('/user', authenticate, async (req, res) => {
     if (req.session.user)
-        sendData(res, { ...req.session.user, password: null });
+        sendData(res, {
+            ...req.session.user,
+            password: null,
+            profileUrl: `${req.session.user.username.toLowerCase()}_avatar.png`
+        });
     else sendError(res, [
         { message: 'This user does not exist!' }
     ], StatusCodes.NOT_FOUND);
 });
 
-router.patch('/user', validate(UpdateUserSchema), authenticate, async (req, res) => {
-    const { email, username, bio, profileUrl } = req.body;
-    UserProfile.findOneAndUpdate({ _id: req.session.user?._id }, { username, email, bio, profileUrl }, { new: true },
+router.patch('/user', authenticate, uploadFile.single('profile'), validate(UpdateUserSchema), async (req, res) => {
+    const { email, username, bio } = req.body;
+    UserProfile.findOneAndUpdate({ _id: req.session.user?._id }, { username, email, bio }, { new: true },
         (error, result) => {
         if (error || result === null)
             sendError(res, [
@@ -24,7 +29,7 @@ router.patch('/user', validate(UpdateUserSchema), authenticate, async (req, res)
             ], StatusCodes.NOT_FOUND);
         else {
             req.session.user = result;
-            return res.sendStatus(200);
+            return res.sendStatus(StatusCodes.OK);
         }
     });
 });
@@ -58,7 +63,7 @@ router.get('/check-username', validate(CheckUsernameSchema), async (req, res) =>
         .find({ username: req.query.username })
         .exec((error, result) => {
             if (error || !result.length)
-                res.sendStatus(200);
+                res.sendStatus(StatusCodes.OK);
             else res.sendStatus(422);
         });
 });

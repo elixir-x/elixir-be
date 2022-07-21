@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from "express";
 import { sendError } from "../utils/request-util";
 import { StatusCodes } from "http-status-codes";
 
+// https://stackoverflow.com/questions/72674930/zod-validator-validate-image/72759158
+
 export const LoginSchema = object({
     body: object({
         user: string({
@@ -76,23 +78,24 @@ export const UpdateUserSchema = object({
         })
             .optional()
     })
-        .partial()
-        .superRefine((data, ctx) => {
-            if (!data.email && !data.bio && !data.username && !data.profileUrl) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: 'You must specify something to update.'
-                });
-            }
-            // if modifying important details the password to the account must be specified
-            // if (data.email || data.username && (!!data.password || !!data.confirmPassword)) {
-            //     return ctx.addIssue({
-            //         code: "custom",
-            //         message: 'You must enter a password to change important user details.'
-            //     });
-            // }
-        })
-});
+})
+    // .partial()
+    // .superRefine((data, ctx) => {
+    //     // const { email, bio, username, profileUrl } = data.body;
+    //     // if (!email && !bio && !username && !profileUrl) {
+    //     //     ctx.addIssue({
+    //     //         code: "custom",
+    //     //         message: 'You must specify something to update.'
+    //     //     });
+    //     // }
+    //     // if modifying important details the password to the account must be specified
+    //     // if (data.email || data.username && (!!data.password || !!data.confirmPassword)) {
+    //     //     return ctx.addIssue({
+    //     //         code: "custom",
+    //     //         message: 'You must enter a password to change important user details.'
+    //     //     });
+    //     // }
+    // });
 
 export const EmailVerificationSchema = object({
     query: object({
