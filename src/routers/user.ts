@@ -12,7 +12,7 @@ router.get('/user', authenticate, async (req, res) => {
         sendData(res, {
             ...req.session.user,
             password: null,
-            profileUrl: `${req.session.user.username.toLowerCase()}_avatar.png`
+            // profileUrl: `${req.session.user.username.toLowerCase()}_avatar.png`
         });
     else sendError(res, [
         { message: 'This user does not exist!' }
