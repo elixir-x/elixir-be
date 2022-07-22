@@ -5,21 +5,25 @@ import { authenticate } from "../middleware/authentication";
 import { StatusCodes } from "http-status-codes";
 import { CheckUsernameSchema, UpdateUserSchema, validate } from "../models/zod.schema";
 import { uploadFile } from "../lib/upload";
+import * as fs from "fs";
+import path from "path";
 const router = express.Router();
 
 router.get('/user', authenticate, async (req, res) => {
-    if (req.session.user)
+    if (req.session.user) {
+        const name = `${req.session.user.username.toLowerCase()}_avatar.png`;
+        const exists = fs.existsSync(path.join(process.env.PROFILE_UPLOAD_PATH as string, name));
         sendData(res, {
             ...req.session.user,
             password: null,
-            // profileUrl: `${req.session.user.username.toLowerCase()}_avatar.png`
+            profileUrl: exists ? name : ''
         });
-    else sendError(res, [
+    } else sendError(res, [
         { message: 'This user does not exist!' }
     ], StatusCodes.NOT_FOUND);
 });
 
-router.patch('/user', authenticate, uploadFile.single('profile'), validate(UpdateUserSchema), async (req, res) => {
+router.patch('/user', authenticate, uploadFile.single('profile'),   validate(UpdateUserSchema), async (req, res) => {
     const { email, username, bio } = req.body;
     UserProfile.findOneAndUpdate({ _id: req.session.user?._id }, { username, email, bio }, { new: true },
         (error, result) => {
