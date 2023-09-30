@@ -2,6 +2,8 @@
 
 Archived due to time since last touched and having transitioned to a different web framework and have moved onto bigger things. I am still very satisfied with the hign quality work I produced during the lifetime of this project. Please feel free to look around.
 
+Looking for the frontend repo? https://github.com/elixir-x/elixir-fe
+
 ## Installation (for local development)
 
 ### Certificates
